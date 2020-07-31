@@ -1,0 +1,8 @@
+.upload-img:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+.upload-img {
+  width: 100%;
+  height: 100%;
+}
