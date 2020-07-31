@@ -1,4 +1,4 @@
-'use strict';
+
 
 const errorOverlayMiddleware = require('react-dev-utils/errorOverlayMiddleware');
 const noopServiceWorkerMiddleware = require('react-dev-utils/noopServiceWorkerMiddleware');
@@ -83,14 +83,16 @@ module.exports = function(proxy, allowedHost) {
     proxy: {
       '/back': {
         // target: 'https://haem.tengwanweigu.com/',
-        target: 'https://em.tengwanweigu.com',
+        target: 'http://123.57.18.244:9007',
+        // target: 'https://em.tengwanweigu.com',
         // target: 'http://192.168.1.137:8888',
         changeOrigin: true,
         secure: false,
       },
       '/api': {
         // target: 'https://haem.tengwanweigu.com/',
-        target: 'https://em.tengwanweigu.com',
+        target: 'http://123.57.18.244:9007',
+        // target: 'https://em.tengwanweigu.com',
         changeOrigin: true,
         secure: false,
       }

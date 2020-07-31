@@ -58,8 +58,8 @@ class User extends React.Component {
     this.columns = [
       { align: 'center', title: '姓名', dataIndex: 'uname' },
       { width: '70px', align: 'center', title: '性别', dataIndex: 'sex', render: sex => (<span>{sex ? '男' : '女'}</span>) },
-      { align: 'center', title: '工号', dataIndex: 'no' },
-      { align: 'center', title: '手机号', dataIndex: 'mobilePhone' },
+      { align: 'center', title: '账号', dataIndex: 'no' },
+      // { align: 'center', title: '手机号', dataIndex: 'mobilePhone' },
       { align: 'center', title: '直属部门', dataIndex: 'department' },
       { align: 'center', title: '职务/岗位', dataIndex: 'positionName' },
       { width: '70px', align: 'center', title: '状态', dataIndex: 'userStatusName' },
@@ -75,7 +75,7 @@ class User extends React.Component {
               onClick={_ => {
                 this.setState({ updateList: [record], type: FuncType.UPDATE, visible: true });
                 if (this.isCancel) return;
-                this.saveOldData = { ...record };
+                this.saveOldData = { ...record, pwssword:'' };
               }}>修改</Button>
             <Button type="danger" onClick={_ => {
               this.setState({ type: FuncType.DELETE, visible: true, deleteUserInfo: record });
@@ -189,11 +189,11 @@ class User extends React.Component {
       item.no = value;
       this.setState({ addList });
     }
-    const onMobileChange = ({ target: { value } }, item) => {
-      // mobile
-      item.mobilePhone = value;
-      this.setState({ addList });
-    }
+    // const onMobileChange = ({ target: { value } }, item) => {
+    //   // mobile
+    //   item.mobilePhone = value;
+    //   this.setState({ addList });
+    // }
     const onDepartmentChange = (e, item) => {
       // department
       item.departmentId = e;
@@ -245,13 +245,13 @@ class User extends React.Component {
         </Select>
       },
       {
-        align: 'center', title: _ => <span><span style={{ color: 'red', width: '100%' }}>*</span>工号</span>, dataIndex: 'no',
-        render: (no, item) => <Input value={no} placeholder={'请输入工号'} style={{ width: '100%' }} onChange={(e) => onNoChange(e, item)} />
+        align: 'center', title: _ => <span><span style={{ color: 'red', width: '100%' }}>*</span>账号</span>, dataIndex: 'no',
+        render: (no, item) => <Input value={no} placeholder={'请输入账号'} style={{ width: '100%' }} onChange={(e) => onNoChange(e, item)} />
       },
-      {
-        align: 'center', title: _ => <span><span style={{ color: 'red' }}>*</span>手机号</span>, dataIndex: 'mobilePhone',
-        render: (mobile, item) => <Input value={mobile} placeholder={'请输入手机号'} onChange={(e) => onMobileChange(e, item)} />
-      },
+      // {
+      //   align: 'center', title: _ => <span><span style={{ color: 'red' }}>*</span>手机号</span>, dataIndex: 'mobilePhone',
+      //   render: (mobile, item) => <Input value={mobile} placeholder={'请输入手机号'} onChange={(e) => onMobileChange(e, item)} />
+      // },
       {
         align: 'center', title: '直属部门', dataIndex: 'departmentId',
         render: (value, item) => <TreeSelect
@@ -333,11 +333,11 @@ class User extends React.Component {
       item.uname = value;
       this.setState({ updateList });
     }
-    const onMobileChange = ({ target: { value } }, item) => {
-      // mobile
-      item.mobilePhone = value;
-      this.setState({ updateList });
-    }
+    // const onMobileChange = ({ target: { value } }, item) => {
+    //   // mobile
+    //   item.mobilePhone = value;
+    //   this.setState({ updateList });
+    // }
     const onDepartmentChange = (e, item) => {
       // department
       item.departmentId = e;
@@ -361,6 +361,11 @@ class User extends React.Component {
       item.roleIds = e;
       this.setState({ updateList });
     }
+    const onPwdChange = ({ target: { value } }, item) => {
+      item.password = value;
+      this.setState({ updateList });
+    }
+
     const columns = [
       { width: '70px', align: 'center', title: '序号', dataIndex: 'key' },
       {
@@ -374,11 +379,11 @@ class User extends React.Component {
           <Option value={false}>女</Option>
         </Select>
       },
-      { align: 'center', title: _ => <span><span style={{ color: 'red' }}>*</span>工号</span>, dataIndex: 'no', },
-      {
-        align: 'center', title: _ => <span><span style={{ color: 'red' }}>*</span>手机号</span>, dataIndex: 'mobilePhone',
-        render: (mobile, item) => <Input value={mobile} placeholder={'请输入手机号'} onChange={(e) => onMobileChange(e, item)} />
-      },
+      { align: 'center', title: _ => <span><span style={{ color: 'red' }}>*</span>账号</span>, dataIndex: 'no', },
+      // {
+      //   align: 'center', title: _ => <span><span style={{ color: 'red' }}>*</span>手机号</span>, dataIndex: 'mobilePhone',
+      //   render: (mobile, item) => <Input value={mobile} placeholder={'请输入手机号'} onChange={(e) => onMobileChange(e, item)} />
+      // },
       {
         align: 'center', title: '直属部门', dataIndex: 'departmentId',
         render: (department, item) => <TreeSelect
@@ -420,6 +425,10 @@ class User extends React.Component {
             }
           </Select>)
         }
+      },
+      {
+        align: 'center', title: _ => <span>密码</span>, dataIndex: 'password',
+        render: (pwd, item) => <Input placeholder={'请输入密码'} value={pwd} onChange={(e) => onPwdChange(e, item)} />
       },
     ];
     return (
@@ -485,13 +494,15 @@ class User extends React.Component {
         break;
       } else if (!user.no) {
         isPass = false;
-        message.warn(`第${user.key}行中的工号没有填写`);
+        message.warn(`第${user.key}行中的账号没有填写`);
         break;
-      } else if (!user.mobilePhone) {
-        isPass = false;
-        message.warn(`第${user.key}行中的手机号没有填写`);
-        break;
-      } else if (!user.userStatus) {
+      }
+      // else if (!user.mobilePhone) {
+      //   isPass = false;
+      //   message.warn(`第${user.key}行中的手机号没有填写`);
+      //   break;
+      // }
+      else if (!user.userStatus) {
         isPass = false;
         message.warn(`第${user.key}行中的用户状态没有选择`);
         break;
@@ -507,7 +518,7 @@ class User extends React.Component {
         message.success("新增用户成功");
       }
     }
-    for (let i = 0; i < addList.length; i ++) {
+    for (let i = 0; i < addList.length; i++) {
       if (i !== 0) addList.pop();
     }
     Object.assign(addList[0], { key: 1, uname: '', sex: true, no: '', mobilePhone: '', departmentId: '', positionName: '', userStatus: "1000", roleIds: defaultRoleList.map(v => v.value) });
@@ -527,7 +538,7 @@ class User extends React.Component {
       }
     });
     if (!isUpdate) {
-      message.warn("你并没有做任务修改");
+      message.warn("你并没有做任何修改");
       return;
     }
 
@@ -584,6 +595,8 @@ class User extends React.Component {
       case FuncType.BATCH_DELETE:
         this.batchDeleteUser();
         break;
+      default:
+        break;
     }
   }
 
@@ -604,13 +617,13 @@ class User extends React.Component {
               onChange={e => this.setState({ name: e.target.value })}
               onSearch={_ => this.setState({ currentPage: 1 }, this.getList)}
             />
-            <Search
+            {/* <Search
               placeholder="请输入手机号"
               value={mobile}
               style={{ width: 250, marginRight: 10 }}
               onChange={e => this.setState({ mobile: e.target.value })}
               onSearch={_ => this.setState({ currentPage: 1 }, this.getList)}
-            />
+            /> */}
 
             <TreeSelect
               placeholder={'请选择部门'}

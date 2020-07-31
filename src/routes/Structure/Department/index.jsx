@@ -103,7 +103,7 @@ class Department extends React.Component {
 
     columns = [
         { title: '组织结构', dataIndex: 'all' },
-        { align: 'center', title: '状态', dataIndex: 'status' },
+        // { align: 'center', title: '状态', dataIndex: 'status' },
         { align: 'center', title: '操作', dataIndex: 'countOutCar' },
     ]
 
@@ -215,13 +215,13 @@ class Department extends React.Component {
                     <span style={{ marginRight: 10 }}>部门名称</span>
                     <Input style={{ flex: 1 }} placeholder={'请输入部门名称'} value={departmentName} onChange={onChangeInput} />
                 </section>
-                <section style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+                {/* <section style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
                     <span style={{ marginRight: 10 }}>部门状态</span>
                     <Radio.Group onChange={onChangeStatus} value={statusDepartment}>
                         <Radio value={StatusValue[0]}>{StatusCode['NORMAL']}</Radio>
                         <Radio value={StatusValue[1]}>{StatusCode['STOP']}</Radio>
                     </Radio.Group>
-                </section>
+                </section> */}
             </Fragment>
         )
     }
@@ -281,7 +281,7 @@ class Department extends React.Component {
                     message.warn("请输入部门名称");
                     return;
                 }
-                let resAdd = await API.post("/back/organization/saveOrUpdate", { fatherId: addValue || 0, department }, "json");
+                let resAdd = await API.post("/back/organization/saveOrUpdate", { fatherId: Array.isArray(addValue) ? 0 : addValue, department }, "json");
                 if (resAdd && resAdd.data.code === 0) {
                     message.success("新增部门成功");
                     this.init();
@@ -294,7 +294,7 @@ class Department extends React.Component {
                     message.warn("你并没有做任何修改");
                 } else {
                     let resUpdate = await API.post("/back/organization/saveOrUpdate",
-                        { fatherId: updateOid, department, organizationStatus: statusDepartment, oid: dataType.oid },
+                        { fatherId: updateOid || 0, department, organizationStatus: statusDepartment, oid: dataType.oid },
                         "json");
                     if (resUpdate && resUpdate.data.code === 0) {
                         message.success("修改部门成功");
@@ -308,6 +308,9 @@ class Department extends React.Component {
                     message.success("删除部门成功");
                     this.init();
                 }
+                break;
+            default:
+                break;
         }
         this.setState({ visible: false });
     }
